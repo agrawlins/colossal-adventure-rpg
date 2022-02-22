@@ -1,6 +1,6 @@
 class Troll {
     constructor(){
-        this.summon = 3
+        this.summon = 3;
         this.name = "Troll";
         this.hp = 100;
         this.atk = 50;

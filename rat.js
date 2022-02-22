@@ -1,6 +1,6 @@
 class Rat {
     constructor(){
-        this.summon = 0
+        this.summon = 0;
         this.name = "Giant Rat";
         this.hp = 20;
         this.atk = 5;

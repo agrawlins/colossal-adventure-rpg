@@ -1,6 +1,6 @@
 class Goblin {
     constructor(){
-        this.summon = 2
+        this.summon = 2;
         this.name = "Goblin";
         this.hp = 60;
         this.atk = 25;

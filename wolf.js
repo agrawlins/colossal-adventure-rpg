@@ -1,6 +1,6 @@
 class Wolf {
     constructor(){
-        this.summon = 1
+        this.summon = 1;
         this.name = "Wolf";
         this.hp = 40;
         this.atk = 10;

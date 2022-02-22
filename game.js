@@ -5,8 +5,9 @@ const Wolf = require ("./wolf");
 const Goblin = require ("./goblin");
 const Troll = require ("./troll");
 let inGame = true;
+let playerHeadCount = 0;
 
- 
+
 
 class Game {
     constructor(){
@@ -29,7 +30,7 @@ class Game {
     
 }
             
-while (inGame === true) {
+while (inGame === true && playerHeadCount <=3) {
     const startMenu = new Game;
     startMenu.mainMenu();
 }
@@ -58,59 +59,59 @@ function playerCustomization() {
     raceSelection()
     function raceSelection() {
         while (incoherent === true) {  
-        let raceSelection = readline.question(`Innkeeper: \n"What ARE you, exactly?" \nSelect one of the following races: \n ${raceOptions[0]} \n ${raceOptions[1]} \n ${raceOptions[2]} \n ${raceOptions[3]}\n`).toLowerCase();
+        let raceSelection = readline.keyIn(`Innkeeper: \n"What ARE you, exactly?" \nSelect one of the following races: \n'H' - ${raceOptions[0]} \n'E' - ${raceOptions[1]} \n'D' - ${raceOptions[2]} \n'M' - ${raceOptions[3]}\n`).toLowerCase();
         switch (raceSelection) {
-            case "human":
+            case "h":
                 this.player.race = raceOptions[0].toLowerCase();
                 console.log(`Innkeeper: \n"Well, bless my soul! It's nice to see another ${player.race} being; \nstill alive that is!"`);
                 professionSelection();
                 break;
-            case "elf":
+            case "e":
                 this.player.race = raceOptions[1].toLowerCase();
                 console.log(`Innkeeper: \n"Well met, friend! I've never seen an ${player.race} in the flesh before; \nYou're a long way from Southwood, friend!"`);
                 professionSelection();
                 break;
-            case "dwarf":
+            case "d":
                 this.player.race = raceOptions[2].toLowerCase();
                 console.log(`Innkeeper: \n"Well met, friend! I've seen the odd ${player.race} here and there; \nbut it's been a while since we've seen *your* kind here..."`);
                 professionSelection();
                 break;
-            case "halfling":
+            case "m":
                 this.player.race = raceOptions[3].toLowerCase();
                 console.log(`Innkeeper: \n"Well met, little one! I'm surprised a ${player.race} would want to leave Halfton; \nAnd right before dinner, no less!"`);
                 professionSelection();
                 break;
             default:
-                console.log("Please enter either 'Human', 'Elf', 'Dwarf', or 'Halfling'. \nCheck your spelling: \nIt will matter from here on out!");
+                console.log("Please enter either 'H', 'E', 'D', or 'M'. \nCheck your spelling: \nIt will matter from here on out!");
             }
         }
     };
     function professionSelection() {
         while (incoherent === true) { 
-            let professionSelection = readline.question(`"Okay... and what exactly IS your profession?" \nSelect one of the following classes: \n ${professionOptions[0]} \n ${professionOptions[1]} \n ${professionOptions[2]} \n ${professionOptions[3]}\n`).toLowerCase();
+            let professionSelection = readline.keyIn(`"Okay... and what exactly IS your profession?" \nSelect one of the following classes: \n'K' - ${professionOptions[0]} \n'R' - ${professionOptions[1]} \n'M' - ${professionOptions[2]} \n'T' - ${professionOptions[3]}\n`).toLowerCase();
             switch (professionSelection) {
-                case "knight":
+                case "k":
                     this.player.profession = professionOptions[0].toLowerCase();
                     console.log(`Innkeeper: \n"And here I was, thinking chivalry was dead! \nYou have no idea how happy I am to see another ${player.profession}!"`);
                     nameSelection();
                     break;
-                case "ranger":
+                case "r":
                     this.player.profession = professionOptions[1].toLowerCase();
                     console.log(`Innkeeper: \n"The bow was a dead giveaway; ${player.profession}s NEVER go without their hunting equipment!"`);
                     nameSelection();
                     break;
-                case "mage":
+                case "m":
                     this.player.profession = professionOptions[2].toLowerCase();
                     console.log(`Innkeeper: \n"A ${player.profession}... \n Now THAT'S something you don't see everyday..."`)
                     nameSelection();
                     break;
-                case "thief":
+                case "t":
                     this.player.profession = professionOptions[3].toLowerCase()
                     console.log(`Innkeeper: \n"I thought I smelled a rat! \nYou'd better keep your hands to yourself, ${player.profession}; \npeople lose hands for stealing here!"`);
                     nameSelection();
                     break;
                 default:
-                    console.log("Please enter either 'Knight', 'Ranger', 'Mage', or 'Thief'. \nCheck your spelling");
+                    console.log("Please enter either 'K', 'R', 'M', or 'T'.");
                     break;
             }
         }
@@ -126,16 +127,16 @@ function playerCustomization() {
     };
 }   
 
-    function adventureMenuSelection(player) {
-        console.log(``);
-        let adventureMenuSelection = readline.keyIn("Press a key: \n'W' - Walk \n'P' - print stats \n'Q' - quit  \n");
+function adventureMenuSelection(player, playerHeadCount) {
+    let inOpenWorld = true;
+    while (inOpenWorld === true) {
+        let adventureMenuSelection = readline.keyIn("Press a key: \n'W' - Walk \n'U' - Use Item \n'P' - print stats \n'Q' - quit  \n").toLowerCase();
         switch (adventureMenuSelection) {
-            case "W".toLowerCase():
+            case "w":
                 startWalking(player)
                 function startWalking(player) {
                     let isWalking = true
                     while (isWalking === true) {
-
                         let combatGambit = Math.floor(Math.random() * 4)
                         switch (combatGambit) {
                             case (combatGambit = 0):
@@ -158,118 +159,191 @@ function playerCustomization() {
                     }
                 }
                 break;
-            case "P".toLowerCase():
+            case "u":
+                let indecisive = true;
+                while (indecisive === true) {
+                    let itemSelection = readline.keyIn(`Which item would you like to use, ${player.name}? \n${player.name}'s Inventory: \n${player.inventory} \n'H' - Health Potion \n'B' - Back \n`).toLowerCase()
+                    switch (itemSelection) {
+                        case "h":
+                            for (let i = 0; i < player.inventory.length; i++) {
+                                if("Health Potion".includes(player.inventory[i])){
+                                    healUp(player);
+                                }
+                            }   
+                            function healUp (player) {
+                                if (player.hp === 100){
+                                    console.log(`Your health is already at ${player.hp}! You should save that for later...`);
+                                } else {
+                                    let playerCurrentHealth = player.hp + 100;
+                                    player.hp = playerCurrentHealth;
+                                    if (player.hp > 100){
+                                        let playerCurrentHealth = 100
+                                        player.hp = playerCurrentHealth;
+                                        player.inventory.pop();
+                                        console.log(`Your Inventory: ${player.inventory}`)
+                                    }
+                                    console.log(`${player.name}'s health: \n${player.hp}`)
+                                }
+
+                            }
+                            indecisive = false;
+                            break;
+                        case "b":
+                            indecisive = false
+                            break;
+                        default:
+                            console.log(`You don't have a(n) ${itemSelection.toLowerCase()} in your inventory, ${player.name}...`)
+                            break;
+                    }
+                }
+                break;
+            case "p".toLowerCase():
                 inventory(player);
                 break;
-            case "Q".toLowerCase():
-                inventory(player);
+            case "q".toLowerCase():
+                console.log(`Goodbye, ${player.name}!`)
+                inGame = false;
+                inOpenWorld = false;
                 break;
             default:
+                console.log(`${player.name}, you must press 'W', 'P', or 'Q'`);
                 break;
+                }
+            }                                                     
         }
-    }
-
-
-
- function inventory(player) {
-    console.log(`${player.name} \n ${player.race} \n${player.profession} \n${player.hp} \n${player.inventory}`)
+function inventory(player) {
+    console.log(`Name: ${player.name} \nRace: ${player.race} \nClass: ${player.profession} \nHealth: ${player.hp} \nInventory: ${player.inventory}`);
 }
 
 function summonFoe(player) {
-    let summoning = Math.floor(Math.random() * 4)
-        if (summoning === 0){
-            new Rat;
-            readyFight(player, Rat);
-        }else if (summoning === 1){
-            new Wolf;
-            readyFight(player, Wolf);
-        }else if (summoning === 2){
-            new Goblin;
-            readyFight(player, Goblin);
-        }else if (summoning === 3){
-            new Troll;
-            readyFight(player, Troll);
-        }
+    let summoning = Math.floor(Math.random() * 4);
+    if (summoning === 0){
+        let foe = new Rat;
+        readyFight(player, foe);
+    }else if (summoning === 1){
+        let foe = new Wolf
+        readyFight(player, foe);
+    }else if (summoning === 2){
+        let foe = new Goblin;
+        readyFight(player, foe);
+    }else if (summoning === 3){
+        let foe = new Troll;
+        readyFight(player, foe);
     }
+}
 
 function readyFight(player, foe) {
+    let playerCurrentHealth = player.hp;
+    let foeCurrentHealth = foe.hp;
     let inCombat = true;
-    while (inCombat = true) {
+    console.log(`A ${foe.name.toLowerCase()} is attacking! \nHealth: ${foe.hp} \nAttack: ${foe.atk}`);
+    while (inCombat === true) {
         playerCombatMenu(player, foe)
         function playerCombatMenu(player, foe) {
             let indecisive = true;
-            while (indecisive = true) { 
-                let firstSelection = readline.question(`A ${foe.name} is attacking! \nQuickly, ${player.name}; take action! \nAttack \nFlee \n`);
+            while (indecisive === true) { 
+                let firstSelection = readline.keyIn(`Quickly, ${player.name}; take action! \n'A' - Attack \n'U' - Use Item \n'F' - Flee \n`).toLowerCase();
                 switch (firstSelection) {
-                    case "Attack".toLowerCase():
-                        let dmg = foe.hp - (Math.floor(Math.random() * 20) + 1) 
-                        console.log(`${foe.name} takes ${dmg} damage!`)
-                        foe.hp = foe.hp - dmg;
-                        if (foe.hp > 0) {
-                            foeCombat(player, foe)
-                        } else if (foe.hp < 0) {
-                            console.log(`The ${foe.name} is defeated; rejoice!`)
-                            player.inventory.push("Health Potion")
+                    case "a":
+                        let dmg = Math.floor(Math.random() * player.atk) + 1;
+                         let foeCurrentHealth = foe.hp - dmg; 
+                         foe.hp = foeCurrentHealth;
+                        console.log(`The ${foe.name.toLowerCase()} takes ${dmg} damage! \n${foe.name}'s health: ${foe.hp}`);
+                        if (foe.hp <= 0) {
+                            let addToHeadCount = playerHeadCount + 1;
+                            playerHeadCount = addToHeadCount;
+                            if (playerHeadCount === 4) {
+                                console.log(`${player.name}, the ${player.race} ${player.profession} has successfully purged Avalon! \nYou may continue to hunt monsters, \nor pres 'Q' until you've exited the game! \n(Still working out a few bugs)`);
+                                inCombat = false;
+                                inOpenWorld = false;
+                                inGame = false;
+                            } else {
+                                console.log(`Current Head Count: ${playerHeadCount}`)
+                                console.log(`The ${foe.name.toLowerCase()} is defeated; rejoice!`);
+                                player.inventory.push("Health Potion");
+                                console.log(`As the ${foe.name.toLowerCase()} dies, it drops a health potion! \nYou add it to your inventory...`)
+                                indecisive = false;
+                                inCombat = false;
+                                adventureMenuSelection(player);
+                            }
+                        } else {
                             indecisive = false
+                            foeCombat(player, foe)
+                        }
+                        function foeCombat(player, foe) {
+                            let dmg = Math.floor(Math.random() * foe.atk) + 1; 
+                            let playerCurrentHealth = player.hp - dmg;
+                            player.hp = playerCurrentHealth;
+                            console.log(`${player.name} takes ${dmg} damage! \nYour health: ${player.hp}`);
+                        if (player.hp <= 0){
+                            console.log(`${player.name}, the ${player.race} ${player.profession}, has been slain by a ${foe.name.toLowerCase()}! \nBetter luck next time, ${player.name}..`)
                             inCombat = false;
-                            adventureMenuSelection(player)
+                            inOpenWorld = false;
+                            inGame = false;
+                        } else {
+                                playerCombatMenu(player, foe);
                         }
+                    }
                         break;
-                    // case "Use Item".toLowerCase():
-                    //     let itemSelection = readline.question(`Which item would you like to use, ${player}?`)
-                    //     switch (itemSelection) {
-                    //         case "Health Potion".toLowerCase() && player.inventory.contains("Health") :
-                    //             player.hp + 50;
-                    //             console.log(`Your current health: \n${player.hp}`)
-                    //             player.inventory.splice("Health Potion")
-                    //             indecisive = false
-                    //             break;
-                    //         case "Back".toLowerCase():
-                    //             indecisive = false
-                    //             break;
-                    //         default:
-                    //             console.log(`You don't have a ${itemSelection} in your inventory, ${player.name}...`)
-                    //             break;
-                    //             }
-                    //         break;
-                    case "Flee".toLowerCase():
-                        let cowardice = false;
-                        if (cowardice === false) {
-                            console.log(`You attempt to flee from the ${foe.name}...`)
-                            results(player, foe)
-                        } else if (cowardice === true) {
-                            console.log(`You already tried to run from this ${foe.name}, remember?! \nHere's a reminder: it didn't work`)
-                        }
-                        function results(player, foe) {
-                            let finalResults = Math.floor(Math.random() * 10)
-                            switch (finalResults) {
-                                case (finalResults >= 5):
-                                    console.log(`You manage to outrun the ${foe.name}, and make it to safety!`)
-                                    pauseMenu()
+                    case "u":
+                        let indecisiveItem = true;
+                        while (indecisiveItem === true) {
+                            let itemSelection = readline.keyIn(`Which item would you like to use, ${player.name}? \n${player.name}'s Inventory: \n${player.inventory} \n'H' - Health Potion \n'B' - Back \n`).toLowerCase()
+                            switch (itemSelection) {
+                                case "h":
+                                    for (let i = 0; i < player.inventory.length; i++) {
+                                        if("Health Potion".includes(player.inventory[i])){
+                                            healUp(player);
+                                        }
+                                    }   
+                                    function healUp (player) {
+                                        if (player.hp === 100){
+                                            console.log(`Your health is already at ${player.hp}! You should save that for later...`);
+                                        } else {
+                                            let playerCurrentHealth = player.hp + 100;
+                                            player.hp = playerCurrentHealth;
+                                            if (player.hp > 100){
+                                                let playerCurrentHealth = 100
+                                                player.hp = playerCurrentHealth;
+                                                player.inventory.pop();
+                                            }
+                                            console.log(`${player.name}'s health: \n${player.hp}`)
+                                        }
+        
+                                    }
+                                    indecisiveItem = false;
+                                    break;
+                                case "Back".toLowerCase():
+                                    indecisiveItem = false
                                     break;
                                 default:
-                                    console.log(`You can't outrun the ${foe.name}. \nYou must stand and fight, ${player.name}!`)
-                                    cowardice = true;
+                                    console.log(`You don't have a(n) ${itemSelection.toLowerCase()} in your inventory, ${player.name}...`)
                                     break;
+                            }
+                        }
+                        break;
+                    case "f":
+                        console.log(`You try to run away from the ${foe.name}`)
+                        results(player, foe);
+                        function results(player, foe) {
+                            let finalResults = Math.floor(Math.random() * 2);
+                                if (finalResults === 0) {
+                                    console.log(`You manage to outrun the ${foe.name.toLowerCase()}, and make it to safety!`);
+                                    indecisive = false;
+                                    inCombat = false;
+                                    adventureMenuSelection(player);
+                                } else {
+                                    console.log(`You can't outrun the ${foe.name.toLowerCase()}. \nYou must stand and fight, ${player.name}!`);
+                                    foeCombat(player, foe);
                                 }
                             }
-                        break; 
-                    }
-                }  
-            }
-        function foeCombat(player, foe) {
-            let dmg = player.hp - (Math.floor(Math.random() * foe.atk) + 1) 
-            console.log(`${player.name} takes ${dmg} damage!`)
-            if (player.hp > 0) {
-                playerCombatMenu(player, foe)
-            } else {
-                console.log(`${player.name}, the ${player.race} ${player.profession} has been slain by a ${foe.name}! \nBetter luck next time, ${player.name}`)
-                inCombat = false;
-                inGame = false;
-            }
+                        }
+                    break; 
+                }
+            }  
         }
     }   
-}
+
 
 
                                  // avalonAdventure().addEventListener("keydown", moving());
@@ -305,7 +379,7 @@ function readyFight(player, foe) {
             // function combatMenu(player, foe) {
             // }    
             
-            //         let firstSelection = readline.question(`A(n) ${foe.name} is attacking! \nQuickly, ${player.name}; take action! \n${element} \nAttack \nUse Item \nFlee`);
+            //         let firstSelection = readline.question(`A(n) ${foe.name.toLowerCase()} is attacking! \nQuickly, ${player.name}; take action! \n${element} \nAttack \nUse Item \nFlee`);
             //         switch (firstSelection) {
             //             case "Attack".toLowerCase()
 
@@ -332,7 +406,7 @@ function readyFight(player, foe) {
                     //     let elementSelection = readline.question(`Which element, ${player.name}?`)
                     //     switch (elementSelection) {
         //         case "Fire".toLowerCase():
-        //             let fireSelection = readline.question(`Which spell? \nFireball (-2m, +4d) \nPower Up (-5m, +5d, -1turn) \nIgnite (-20m, -20% ${foe.name} hp/turn) \nMeteor`)
+        //             let fireSelection = readline.question(`Which spell? \nFireball (-2m, +4d) \nPower Up (-5m, +5d, -1turn) \nIgnite (-20m, -20% ${foe.name.toLowerCase()} hp/turn) \nMeteor`)
         //             switch (fireSelection) {
         //                 case "Fireball".toLowerCase():
         //                     if (player.mana >= 2) {
